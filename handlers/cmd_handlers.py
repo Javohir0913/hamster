@@ -14,6 +14,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.keys import Keys
 import time
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 
 from config import DB_NAME
 from handlers.state.user_state import HamsterState
@@ -53,8 +57,14 @@ async def tanalsh_func(message: Message, state: FSMContext):
 
 @cmd_router.callback_query(HamsterState.tanalsh)
 async def hamster_loading(cb_query: CallbackQuery, state: FSMContext):
-    driver_service = Service(executable_path=r'C:\webdriver\chromedriver.exe')  # Bu joyni to'g'rilang
-    driver = webdriver.Chrome(service=driver_service)
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")  # Brauzerni ko'rinmasdan ishga tushirish
+    chrome_options.add_argument("--no-sandbox")  # Bu ba'zi hostinglarda kerak bo'lishi mumkin
+    chrome_options.add_argument("--disable-dev-shm-usage")  # Tizim xotira muammolaridan qochish uchun
+
+    # Driver boshqaruvi
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+
     # Sahifani ochish
     driver.get('https://digitalninja.ru/hamster')
 
@@ -68,8 +78,6 @@ async def hamster_loading(cb_query: CallbackQuery, state: FSMContext):
         if number == int(cb_query.data):
             item.click()
     # Tugmani bosish
-    # button = driver.find_element(By.CLASS_NAME, 'promo-item.content-wrapper')
-    # button.click()
 
     for _ in range(3):
         warning_buttons = driver.find_elements(By.CLASS_NAME, 'btn.btn_warning')
