@@ -57,6 +57,7 @@ async def tanalsh_func(message: Message, state: FSMContext):
 
 @cmd_router.callback_query(HamsterState.tanalsh)
 async def hamster_loading(cb_query: CallbackQuery, state: FSMContext):
+    await cb_query.message.delete()
     chrome_options = Options()
     chrome_options.add_argument("--headless")  # Brauzerni ko'rinmasdan ishga tushirish
     chrome_options.add_argument("--no-sandbox")  # Bu ba'zi hostinglarda kerak bo'lishi mumkin
@@ -85,7 +86,7 @@ async def hamster_loading(cb_query: CallbackQuery, state: FSMContext):
             warning_button.click()
             time.sleep(1)
     # Tugmani bosgandan keyin sahifa o'zgarishi uchun kutish
-    time.sleep(300)
+    time.sleep(240)
     promo_cods = driver.find_elements(By.CLASS_NAME, 'promo-code__text')
     for promo_cod in promo_cods:
         print(promo_cod.text)
